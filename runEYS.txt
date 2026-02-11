@@ -1,0 +1,53 @@
+To preview the "Earn Your Screen" iOS app, you'll need a Mac with Xcode installed (version 14+ recommended for iOS 16+ support). Since your workspace is on Windows, you'll need to copy the files to a Mac. Here's the step-by-step process:
+
+## 1. Transfer Files to Mac
+- Copy the entire `EarnYourScreen` folder from your Windows machine to a Mac (via USB, cloud storage, or network share).
+- Place it in a convenient location, e.g., `~/Desktop/EarnYourScreen`.
+
+## 2. Create Xcode Project
+On the Mac:
+1. Open Xcode.
+2. Select **File > New > Project**.
+3. Choose **App** under iOS.
+4. Set:
+   - **Product Name**: EarnYourScreen
+   - **Interface**: SwiftUI
+   - **Language**: Swift
+   - **Storage**: None (we'll replace with our code)
+5. Choose a location (e.g., `~/Desktop/EarnYourScreenProject`).
+6. Click **Create**.
+
+## 3. Replace Project Files
+1. In Finder, navigate to your new Xcode project folder.
+2. Delete the default `EarnYourScreenApp.swift` and `ContentView.swift`.
+3. Copy all files from your scaffolded `EarnYourScreen` folder into the Xcode project folder, preserving the structure.
+4. In Xcode, right-click the project navigator > **Add Files to "EarnYourScreen"** > Select all the copied folders/files > **Add**.
+
+## 4. Add Extension Targets
+For the Screen Time extensions:
+1. In Xcode, **File > New > Target**.
+2. Choose **Device Activity Monitor Extension** (for monitoring).
+3. Name: `DeviceActivityMonitorExtension`.
+4. Repeat for **Device Activity Report Extension** (name: `DeviceActivityReportExtension`).
+5. Replace the default extension files with your scaffolded ones from `Extensions/`.
+
+## 5. Configure Entitlements
+For Screen Time APIs:
+1. Select the main app target > **Signing & Capabilities**.
+2. Add **Family Controls** capability.
+3. Add **App Groups** (create a group like `group.com.yourname.EarnYourScreen`).
+4. Do the same for extension targets.
+5. In each target's **Info.plist**, add:
+   - `NSFamilyControlsUsageDescription`: "This app uses Screen Time to monitor learning apps."
+   - `NSUserTrackingUsageDescription`: If needed for tracking.
+
+## 6. Build & Run
+1. Select an iOS Simulator (e.g., iPhone 15) or connect a device.
+2. Click the **Run** button (▶️) or **Product > Run**.
+3. The app should launch in the simulator/device.
+
+## Notes
+- **Screen Time APIs** require iOS 15+ and physical device testing (simulators don't support Family Controls).
+- For full functionality, you'll need to set up Family Sharing on the device.
+- If you encounter build errors, check that all imports are correct and frameworks are linked (FamilyControls, DeviceActivity, ManagedSettings).
+- The app uses placeholder data, so you can interact with the UI immediately.
