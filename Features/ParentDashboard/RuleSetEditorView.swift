@@ -1,5 +1,9 @@
 import SwiftUI
 
+#if canImport(FamilyControls)
+import FamilyControls
+#endif
+
 struct RuleSetEditorView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.dismiss) private var dismiss

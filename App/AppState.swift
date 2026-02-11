@@ -63,6 +63,14 @@ final class AppState: ObservableObject {
             parentOverride = snapshot.parentOverride
         }
 
+        if ruleSet.policy == .approvedOnlyWindow {
+            screenTimeService.startMonitoringApprovedOnlyWindow(
+                selection: selectedApprovedApps,
+                startMinutes: ruleSet.unlockWindowStartMinutes,
+                endMinutes: ruleSet.unlockWindowEndMinutes
+            )
+        }
+
         refreshUnlockStatus()
 
         // Persist changes with a small debounce to avoid excessive writes.
@@ -117,16 +125,10 @@ final class AppState: ObservableObject {
                 unlockStatus = .locked(reason: scheduleLockedReason(now: Date()))
             }
         case .approvedOnlyWindow:
-            if isWithinDailyWindow(now: Date(), startMinutes: ruleSet.unlockWindowStartMinutes, endMinutes: ruleSet.unlockWindowEndMinutes) {
-                unlockStatus = .locked(reason: "Approved apps only")
-                screenTimeService.startMonitoringApprovedOnlyWindow(
-                    selection: selectedApprovedApps,
-                    startMinutes: ruleSet.unlockWindowStartMinutes,
-                    endMinutes: ruleSet.unlockWindowEndMinutes
-                )
-            } else {
-                unlockStatus = .unlocked
-            }
+            let withinWindow = isWithinDailyWindow(now: Date(), startMinutes: ruleSet.unlockWindowStartMinutes, endMinutes: ruleSet.unlockWindowEndMinutes)
+            var store = ScreenTimeSharedStore()
+            store.approvedWindowIsActive = withinWindow
+            unlockStatus = withinWindow ? .locked(reason: "Approved apps only") : .unlocked
         case .lockUntilGoalsMet:
             if allApproved && learningMet && meetsXP {
                 unlockStatus = .unlocked
